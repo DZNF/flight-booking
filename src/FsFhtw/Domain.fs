@@ -21,7 +21,7 @@ type Passenger =
       FrequentFlyerProgramId: string option }
 
 type FlightDesignator = 
-    { Airline: string 
+    { AirlineDesignator: string 
       Number: int }
 
 type Flight =
