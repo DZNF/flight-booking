@@ -61,6 +61,29 @@ type Booking =
 
 type State = int
 
+let Flights = [
+    { Flight.DepartureAirport = IATA "VIE"
+      Flight.ArrivalAirport = IATA "FRA"
+      Flight.DepartureTime = System.DateTime.Now
+      Flight.Duration = System.TimeSpan.FromHours(1.0)
+      Flight.Designator = 
+          { FlightDesignator.AirlineDesignator = "OE"
+            FlightDesignator.Number = 123 }}
+    { Flight.DepartureAirport = IATA "VIE"
+      Flight.ArrivalAirport = IATA "DAL"
+      Flight.DepartureTime = System.DateTime.Now
+      Flight.Duration = System.TimeSpan.FromHours(10.0)
+      Flight.Designator = 
+          { FlightDesignator.AirlineDesignator = "OE"
+            FlightDesignator.Number = 887 }}
+    { Flight.DepartureAirport = IATA "VIE"
+      Flight.ArrivalAirport = IATA "BOM"
+      Flight.DepartureTime = System.DateTime.Now
+      Flight.Duration = System.TimeSpan.FromHours(12.0)
+      Flight.Designator = 
+          { FlightDesignator.AirlineDesignator = "OE"
+            FlightDesignator.Number = 334 }} ]
+
 type Message =
     | Increment
     | Decrement
