@@ -89,6 +89,7 @@ type Message =
     | Decrement
     | IncrementBy of int
     | DecrementBy of int
+    | ListFlights
 
 let init () : State =
     0
@@ -99,3 +100,6 @@ let update (msg : Message) (model : State) : State =
     | Decrement -> model - 1
     | IncrementBy x -> model + x
     | DecrementBy x -> model - x
+    | ListFlights -> 
+        Flights |> List.iter (fun a -> printfn "%A" a)
+        model

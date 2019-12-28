@@ -17,6 +17,7 @@ let read (input : string) =
     | IncrementBy v -> Domain.IncrementBy v |> DomainMessage
     | DecrementBy v -> Domain.DecrementBy v |> DomainMessage
     | Help -> HelpRequested
+    | ListFlights -> Domain.ListFlights |> DomainMessage
     | ParseFailed  -> NotParsable input
 
 open Microsoft.FSharp.Reflection
