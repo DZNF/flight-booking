@@ -22,6 +22,7 @@ let read (input : string) =
 
 open Microsoft.FSharp.Reflection
 
+// TODO: Needs update for split command display capability (e.g. `List Flights`)
 let createHelpText () : string =
     FSharpType.GetUnionCases typeof<Domain.Message>
     |> Array.map (fun case -> case.Name)

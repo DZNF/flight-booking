@@ -8,6 +8,9 @@ let safeEquals (it : string) (theOther : string) =
 [<Literal>]
 let HelpLabel = "Help"
 
+[<Literal>]
+let ListVerb = "List"
+
 let (|Increment|Decrement|IncrementBy|DecrementBy|Help|ParseFailed|ListFlights|) (input : string) =
     let tryParseInt (arg : string) valueConstructor =
         let (worked, arg') = Int32.TryParse arg
@@ -18,7 +21,8 @@ let (|Increment|Decrement|IncrementBy|DecrementBy|Help|ParseFailed|ListFlights|)
     | [ verb ] when safeEquals verb (nameof Domain.Increment) -> Increment
     | [ verb ] when safeEquals verb (nameof Domain.Decrement) -> Decrement
     | [ verb ] when safeEquals verb HelpLabel -> Help
-    | [ verb ] when safeEquals verb (nameof Domain.ListFlights) -> ListFlights
+    | [ verb; arg ] when safeEquals verb ListVerb && safeEquals arg "Flights" ->
+        ListFlights
     | [ verb; arg ] when safeEquals verb (nameof Domain.IncrementBy) ->
         tryParseInt arg (fun value -> IncrementBy value)
     | [ verb; arg ] when safeEquals verb (nameof Domain.DecrementBy) ->
