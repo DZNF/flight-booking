@@ -2,7 +2,7 @@ module Parser
 
 open System
 
-let safeEquals (it : string) (theOther : string) =
+let (=~) (it : string) (theOther : string) =
     String.Equals(it, theOther, StringComparison.OrdinalIgnoreCase)
 
 [<Literal>]
@@ -14,7 +14,7 @@ let ListVerb = "List"
 let (|Help|ParseFailed|ListFlights|) (input : string) =
     let parts = input.Split(' ') |> List.ofArray
     match parts with
-    | [ verb ] when safeEquals verb HelpLabel -> Help
-    | [ verb; arg ] when safeEquals verb ListVerb && safeEquals arg "Flights" ->
+    | [ verb ] when verb =~ HelpLabel -> Help
+    | [ verb; arg ] when verb =~ ListVerb && arg =~ "Flights" ->
         ListFlights
     | _ -> ParseFailed
