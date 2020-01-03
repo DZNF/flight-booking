@@ -13,6 +13,7 @@ type State = Domain.State
 let read (input : string) =
     match input with
     | Help -> HelpRequested
+    | ListBookings -> Domain.ListBookings |> DomainMessage
     | ListFlights -> Domain.ListFlights |> DomainMessage
     | ParseFailed  -> NotParsable input
 

@@ -93,6 +93,10 @@ let init () : State = List.empty
 
 let update (msg : Message) (model : State) : State =
     match msg with
+    | ListBookings ->
+        printfn "Bookings:"
+        model |> List.iter (fun f -> printfn "%A" f)
+        model
     | ListFlights ->
         Flights |> List.iter (fun a -> printfn "%A" a)
         model
