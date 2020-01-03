@@ -4,7 +4,7 @@ module Domain
 // OverbookingRate
 // Compensation
 
-type Airport = 
+type Airport =
     | IATA of string
     | ICAO of string
     | FAA of string
@@ -16,16 +16,16 @@ type Person =
       LastName: string
       Birthday: string }
 
-type Passenger = 
+type Passenger =
     { Person: Person
       FrequentFlyerProgramId: string option }
 
-type FlightDesignator = 
-    { AirlineDesignator: string 
+type FlightDesignator =
+    { AirlineDesignator: string
       Number: int }
 
 type Flight =
-    { Designator: FlightDesignator 
+    { Designator: FlightDesignator
       DepartureTime: System.DateTime
       Duration: System.TimeSpan
       DepartureAirport: Airport
@@ -37,8 +37,8 @@ type PaymentState =
 
 type PaymentMethod =
     | Cash
-    | PayPal of PaymentState 
-    | CreditCard of PaymentState 
+    | PayPal of PaymentState
+    | CreditCard of PaymentState
 
 type Price =
     { Amount: decimal
@@ -48,58 +48,49 @@ type Payment =
     { Method: PaymentMethod
       Price: Price }
 
-type BoardingInfo = 
+type BoardingInfo =
     { Gate: string option
       Seat: string option }
 
-type Booking = 
+type Booking =
     { Passenger: Passenger
       PaymentInfo: Payment
       Flight: Flight
       BoardingInfo: BoardingInfo option
       Luggage: Luggage }
 
-type State = int
+type State = Booking list
 
 let Flights = [
     { Flight.DepartureAirport = IATA "VIE"
       Flight.ArrivalAirport = IATA "FRA"
       Flight.DepartureTime = System.DateTime.Now
       Flight.Duration = System.TimeSpan.FromHours(1.0)
-      Flight.Designator = 
+      Flight.Designator =
           { FlightDesignator.AirlineDesignator = "OE"
             FlightDesignator.Number = 123 }}
     { Flight.DepartureAirport = IATA "VIE"
       Flight.ArrivalAirport = IATA "DAL"
       Flight.DepartureTime = System.DateTime.Now
       Flight.Duration = System.TimeSpan.FromHours(10.0)
-      Flight.Designator = 
+      Flight.Designator =
           { FlightDesignator.AirlineDesignator = "OE"
             FlightDesignator.Number = 887 }}
     { Flight.DepartureAirport = IATA "VIE"
       Flight.ArrivalAirport = IATA "BOM"
       Flight.DepartureTime = System.DateTime.Now
       Flight.Duration = System.TimeSpan.FromHours(12.0)
-      Flight.Designator = 
+      Flight.Designator =
           { FlightDesignator.AirlineDesignator = "OE"
             FlightDesignator.Number = 334 }} ]
 
 type Message =
-    | Increment
-    | Decrement
-    | IncrementBy of int
-    | DecrementBy of int
     | ListFlights
 
-let init () : State =
-    0
+let init () : State = List.empty
 
 let update (msg : Message) (model : State) : State =
     match msg with
-    | Increment -> model + 1
-    | Decrement -> model - 1
-    | IncrementBy x -> model + x
-    | DecrementBy x -> model - x
-    | ListFlights -> 
+    | ListFlights ->
         Flights |> List.iter (fun a -> printfn "%A" a)
         model
