@@ -86,6 +86,7 @@ let Flights = [
 
 type Message =
     | ListFlights
+    | CreateBooking
 
 let init () : State = List.empty
 
