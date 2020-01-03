@@ -85,6 +85,7 @@ let Flights = [
             FlightDesignator.Number = 334 }} ]
 
 type Message =
+    | ListBookings
     | ListFlights
     | CreateBooking
 
