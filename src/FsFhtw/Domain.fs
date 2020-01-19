@@ -1,5 +1,6 @@
 module Domain
 
+open System
 // Optional:
 // OverbookingRate
 // Compensation
@@ -82,15 +83,29 @@ let Flights = [
           { FlightDesignator.AirlineDesignator = "OE"
             FlightDesignator.Number = 334 }} ]
 
+let LoggedInPassenger = { Passenger.Person = { FirstName = "Elfriede"
+                                               LastName = "Wiedenbauer"
+                                               Birthday = "11.11.1911" }
+                          Passenger.FrequentFlyerProgramId = Some "1337" }
+
 type Message =
     | ListBookings
     | ListFlights
-    | CreateBooking
+    | CreateBooking of string * bool
     | SearchFlights of Airport * Airport
 
 let searchFlights (departureAirport : Airport) (arrivalAirport : Airport) : Flight list = 
     List.filter (fun flight -> flight.DepartureAirport = departureAirport && flight.ArrivalAirport = arrivalAirport) Flights
- 
+
+let getFlight (designator : FlightDesignator) : Flight = 
+    List.find (fun flight -> flight.Designator = designator) Flights
+
+let parseDesignator (designator : string) : FlightDesignator = 
+    let splitDesignator = designator.Split('/') |> List.ofArray
+    let (_, parseNumber) = Int32.TryParse (List.item 1 splitDesignator)
+    { FlightDesignator.AirlineDesignator = (List.head splitDesignator).ToUpper()
+      FlightDesignator.Number = parseNumber }
+
 let init () : State = List.empty
 
 let update (msg : Message) (model : State) : State =
@@ -106,3 +121,15 @@ let update (msg : Message) (model : State) : State =
         printfn "Results for %A -> %A:" departure.IATA arrival.IATA
         searchFlights departure arrival |> List.iter (fun a -> printfn "%A" a) 
         model
+    | CreateBooking (flightDesignator, luggage) ->
+        printfn "Creating booking for flight %A" flightDesignator
+        let designator = parseDesignator flightDesignator
+        let flight = getFlight designator
+        let booking = { Booking.Flight = flight
+                        Booking.Luggage = luggage
+                        Booking.Passenger = LoggedInPassenger
+                        Booking.PaymentInfo = { Payment.Method = PaymentMethod.Cash; 
+                                                Payment.Price = { Price.Amount = 200m; Price.Currency = "EUR"}}
+                        Booking.BoardingInfo = None }
+        printfn "Booking created %A" booking
+        List.append model [booking]  

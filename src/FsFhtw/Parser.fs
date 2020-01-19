@@ -24,7 +24,8 @@ let (|Help|ParseFailed|ListBookings|ListFlights|CreateBooking|SearchFlights|) (i
     | [ verb ] when verb =~ HelpLabel -> Help
     | [ verb; arg ] when verb =~ ListVerb && arg =~ "Flights" -> ListFlights
     | [ verb; arg ] when verb =~ ListVerb && arg =~ "Bookings" -> ListBookings
-    | [ verb; arg ] when verb =~ CreateVerb && arg =~ "Booking" -> CreateBooking
+    | [ verb; arg; flightDesignator; luggage ] when verb =~ CreateVerb && arg =~ "Booking" -> 
+        CreateBooking (flightDesignator, Boolean.Parse(luggage))
     | [ verb; arg; departureAirport; arrivalAirport ] when verb =~ SearchVerb && arg =~ "Flights" -> 
         SearchFlights ({ Airport.IATA = departureAirport.ToUpper() }, { Airport.IATA = arrivalAirport.ToUpper() })
     | _ -> ParseFailed
