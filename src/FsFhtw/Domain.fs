@@ -5,9 +5,9 @@ module Domain
 // Compensation
 
 type Airport =
-    | IATA of string
-    | ICAO of string
-    | FAA of string
+    { IATA: string option
+      ICAO: string option
+      FAA: string option }
 
 type Luggage = bool
 
@@ -62,22 +62,22 @@ type Booking =
 type State = Booking list
 
 let Flights = [
-    { Flight.DepartureAirport = IATA "VIE"
-      Flight.ArrivalAirport = IATA "FRA"
+    { Flight.DepartureAirport = { IATA = Some "VIE"; ICAO = None; FAA = None }
+      Flight.ArrivalAirport = { IATA = Some "FRA"; ICAO = None; FAA = None }
       Flight.DepartureTime = System.DateTime.Now
       Flight.Duration = System.TimeSpan.FromHours(1.0)
       Flight.Designator =
           { FlightDesignator.AirlineDesignator = "OE"
             FlightDesignator.Number = 123 }}
-    { Flight.DepartureAirport = IATA "VIE"
-      Flight.ArrivalAirport = IATA "DAL"
+    { Flight.DepartureAirport = { IATA = Some "VIE"; ICAO = None; FAA = None }
+      Flight.ArrivalAirport = { IATA = Some "DAL"; ICAO = None; FAA = None }
       Flight.DepartureTime = System.DateTime.Now
       Flight.Duration = System.TimeSpan.FromHours(10.0)
       Flight.Designator =
           { FlightDesignator.AirlineDesignator = "OE"
             FlightDesignator.Number = 887 }}
-    { Flight.DepartureAirport = IATA "VIE"
-      Flight.ArrivalAirport = IATA "BOM"
+    { Flight.DepartureAirport = { IATA = Some "VIE"; ICAO = None; FAA = None }
+      Flight.ArrivalAirport = { IATA = Some "BOM"; ICAO = None; FAA = None }
       Flight.DepartureTime = System.DateTime.Now
       Flight.Duration = System.TimeSpan.FromHours(12.0)
       Flight.Designator =
