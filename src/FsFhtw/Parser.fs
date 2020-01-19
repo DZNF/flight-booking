@@ -1,6 +1,7 @@
 module Parser
 
 open System
+open Domain
 
 let (=~) (it : string) (theOther : string) =
     String.Equals(it, theOther, StringComparison.OrdinalIgnoreCase)
@@ -14,11 +15,16 @@ let ListVerb = "List"
 [<Literal>]
 let CreateVerb = "Create"
 
-let (|Help|ParseFailed|ListBookings|ListFlights|CreateBooking|) (input : string) =
+[<Literal>]
+let SearchVerb = "Search"
+
+let (|Help|ParseFailed|ListBookings|ListFlights|CreateBooking|SearchFlights|) (input : string) =
     let parts = input.Split(' ') |> List.ofArray
     match parts with
     | [ verb ] when verb =~ HelpLabel -> Help
     | [ verb; arg ] when verb =~ ListVerb && arg =~ "Flights" -> ListFlights
     | [ verb; arg ] when verb =~ ListVerb && arg =~ "Bookings" -> ListBookings
     | [ verb; arg ] when verb =~ CreateVerb && arg =~ "Booking" -> CreateBooking
+    | [ verb; arg; departureAirport; arrivalAirport ] when verb =~ SearchVerb && arg =~ "Flights" -> 
+        SearchFlights ({ Airport.IATA = departureAirport.ToUpper() }, { Airport.IATA = arrivalAirport.ToUpper() })
     | _ -> ParseFailed

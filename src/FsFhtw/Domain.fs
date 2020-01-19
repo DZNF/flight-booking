@@ -86,7 +86,11 @@ type Message =
     | ListBookings
     | ListFlights
     | CreateBooking
+    | SearchFlights of Airport * Airport
 
+let searchFlights (departureAirport : Airport) (arrivalAirport : Airport) : Flight list = 
+    List.filter (fun flight -> flight.DepartureAirport = departureAirport && flight.ArrivalAirport = arrivalAirport) Flights
+ 
 let init () : State = List.empty
 
 let update (msg : Message) (model : State) : State =
@@ -97,4 +101,8 @@ let update (msg : Message) (model : State) : State =
         model
     | ListFlights ->
         Flights |> List.iter (fun a -> printfn "%A" a)
+        model
+    | SearchFlights (departure, arrival) ->
+        printfn "Results for %A -> %A:" departure.IATA arrival.IATA
+        searchFlights departure arrival |> List.iter (fun a -> printfn "%A" a) 
         model

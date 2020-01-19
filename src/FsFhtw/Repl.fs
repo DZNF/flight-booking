@@ -15,6 +15,7 @@ let read (input : string) =
     | Help -> HelpRequested
     | ListBookings -> Domain.ListBookings |> DomainMessage
     | ListFlights -> Domain.ListFlights |> DomainMessage
+    | SearchFlights x -> Domain.SearchFlights x |> DomainMessage
     | ParseFailed  -> NotParsable input
 
 open Microsoft.FSharp.Reflection
