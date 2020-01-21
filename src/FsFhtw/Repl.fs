@@ -19,14 +19,14 @@ let read (input : string) =
     | CreateBooking b -> Domain.CreateBooking b |> DomainMessage
     | ParseFailed  -> NotParsable input
 
-open Microsoft.FSharp.Reflection
-
 // TODO: Needs update for split command display capability (e.g. `List Flights`)
 let createHelpText () : string =
-    FSharpType.GetUnionCases typeof<Domain.Message>
-    |> Array.map (fun case -> case.Name)
-    |> Array.fold (fun prev curr -> prev + " " + curr) ""
-    |> (fun s -> s.Trim() |> sprintf "Known commands are: %s")
+    let h = Map.empty
+            |> Map.add "List Flights" "Prints a list of all the available flights."
+            |> Map.add "List Bookings" "Prints a list of all the bookings."
+            |> Map.add "Create Booking" """Creates a new booking."""
+            |> Map.add "Search Flights" """Searches for a flight using the given departure and arrival IATA codes (e.g. "search flight VIE DAL")."""
+    Map.fold (fun s k v -> sprintf "%s%s\t%s%s" s k v Environment.NewLine) "" h
 
 let evaluate (update : Domain.Message -> State -> State) (state : State) (msg : Message) =
     match msg with
