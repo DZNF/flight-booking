@@ -50,7 +50,6 @@ let evaluate (update : Domain.Message -> State -> State) (state : State) (msg : 
 let print (state : State, outputToPrint : string) =
     printfn "%s\n" outputToPrint
     printf "> "
-
     state
 
 let rec loop (state : State) =

@@ -133,7 +133,7 @@ let update (msg : Message) (model : State) : State =
         let booking = { Booking.Flight = flight
                         Booking.Luggage = luggage
                         Booking.Passenger = LoggedInPassenger
-                        Booking.PaymentInfo = { Payment.Method = PaymentMethod.Cash;
+                        Booking.PaymentInfo = { Payment.Method = Cash;
                                                 Payment.Price = { Price.Amount = 200m; Price.Currency = "EUR"}}
                         Booking.BoardingInfo = None }
         printfn "Booking created %A" booking
@@ -143,4 +143,3 @@ let update (msg : Message) (model : State) : State =
         { model with State = LoggedIn passenger }
     | Logout ->
         { model with State = NotLoggedIn }
-        
