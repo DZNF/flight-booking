@@ -58,7 +58,12 @@ type Booking =
       BoardingInfo: BoardingInfo option
       Luggage: Luggage }
 
-type State = Booking list
+type FSBSStates =
+    | NotLoggedIn
+    | LoggedIn of Passenger option
+
+type State = { Bookings: Booking list
+               State: FSBSStates }
 
 let Flights = [
     { Flight.DepartureAirport = { IATA = "VIE" }
@@ -94,32 +99,33 @@ type Message =
     | CreateBooking of string * bool
     | SearchFlights of Airport * Airport
 
-let searchFlights (departureAirport : Airport) (arrivalAirport : Airport) : Flight list = 
+let searchFlights (departureAirport : Airport) (arrivalAirport : Airport) : Flight list =
     List.filter (fun flight -> flight.DepartureAirport = departureAirport && flight.ArrivalAirport = arrivalAirport) Flights
 
-let getFlight (designator : FlightDesignator) : Flight = 
+let getFlight (designator : FlightDesignator) : Flight =
     List.find (fun flight -> flight.Designator = designator) Flights
 
-let parseDesignator (designator : string) : FlightDesignator = 
+let parseDesignator (designator : string) : FlightDesignator =
     let splitDesignator = designator.Split('/') |> List.ofArray
     let (_, parseNumber) = Int32.TryParse (List.item 1 splitDesignator)
     { FlightDesignator.AirlineDesignator = (List.head splitDesignator).ToUpper()
       FlightDesignator.Number = parseNumber }
 
-let init () : State = List.empty
+let init () : State = { Bookings = List.empty
+                        State = NotLoggedIn }
 
 let update (msg : Message) (model : State) : State =
     match msg with
     | ListBookings ->
         printfn "Bookings:"
-        model |> List.iter (fun f -> printfn "%A" f)
+        model.Bookings |> List.iter (fun f -> printfn "%A" f)
         model
     | ListFlights ->
         Flights |> List.iter (fun a -> printfn "%A" a)
         model
     | SearchFlights (departure, arrival) ->
         printfn "Results for %A -> %A:" departure.IATA arrival.IATA
-        searchFlights departure arrival |> List.iter (fun a -> printfn "%A" a) 
+        searchFlights departure arrival |> List.iter (fun a -> printfn "%A" a)
         model
     | CreateBooking (flightDesignator, luggage) ->
         printfn "Creating booking for flight %A" flightDesignator
@@ -128,8 +134,9 @@ let update (msg : Message) (model : State) : State =
         let booking = { Booking.Flight = flight
                         Booking.Luggage = luggage
                         Booking.Passenger = LoggedInPassenger
-                        Booking.PaymentInfo = { Payment.Method = PaymentMethod.Cash; 
+                        Booking.PaymentInfo = { Payment.Method = PaymentMethod.Cash;
                                                 Payment.Price = { Price.Amount = 200m; Price.Currency = "EUR"}}
                         Booking.BoardingInfo = None }
         printfn "Booking created %A" booking
-        List.append model [booking]  
+        let updatedBookings = List.append model.Bookings [booking]
+        { model with Bookings = updatedBookings } 
