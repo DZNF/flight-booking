@@ -95,6 +95,8 @@ type Message =
     | ListFlights
     | CreateBooking of string * bool
     | SearchFlights of Airport * Airport
+    | Login of Passenger
+    | Logout
 
 let searchFlights (departureAirport : Airport) (arrivalAirport : Airport) : Flight list =
     List.filter (fun flight -> flight.DepartureAirport = departureAirport && flight.ArrivalAirport = arrivalAirport) Flights
@@ -136,4 +138,9 @@ let update (msg : Message) (model : State) : State =
                         Booking.BoardingInfo = None }
         printfn "Booking created %A" booking
         let updatedBookings = List.append model.Bookings [booking]
-        { model with Bookings = updatedBookings } 
+        { model with Bookings = updatedBookings }
+    | Login passenger ->
+        { model with State = LoggedIn (Some passenger) }
+    | Logout ->
+        { model with State = NotLoggedIn }
+        

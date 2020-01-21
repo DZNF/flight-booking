@@ -18,6 +18,22 @@ let CreateVerb = "Create"
 [<Literal>]
 let SearchVerb = "Search"
 
+[<Literal>]
+let LoginVerb = "Login"
+
+[<Literal>]
+let LogoutVerb = "Logout"
+
+let (|Login|Logout|ParseFailed|) (input : string) = 
+    let parts = input.Split(' ') |> List.ofArray
+    match parts with
+    | [ verb; firstname; lastname; birthday ] when verb =~ LoginVerb -> 
+        Login { Passenger.Person = { Person.FirstName = firstname; Person.LastName = lastname; Person.Birthday = birthday }; Passenger.FrequentFlyerProgramId = None }
+    | [ verb; firstname; lastname; birthday; frequentFlyerId ] when verb =~ LoginVerb -> 
+        Login { Passenger.Person = { Person.FirstName = firstname; Person.LastName = lastname; Person.Birthday = birthday }; Passenger.FrequentFlyerProgramId = Some frequentFlyerId }
+    | [ verb ] when verb =~ LogoutVerb -> Logout
+    | _ -> ParseFailed
+
 let (|Help|ParseFailed|ListBookings|ListFlights|CreateBooking|SearchFlights|) (input : string) =
     let parts = input.Split(' ') |> List.ofArray
     match parts with

@@ -17,6 +17,8 @@ let read (input : string) =
     | ListFlights -> Domain.ListFlights |> DomainMessage
     | SearchFlights f -> Domain.SearchFlights f |> DomainMessage
     | CreateBooking b -> Domain.CreateBooking b |> DomainMessage
+    | Login p -> Domain.Login p |> DomainMessage
+    | Logout -> Domain.Logout |> DomainMessage
     | ParseFailed  -> NotParsable input
 
 // TODO: Needs update for split command display capability (e.g. `List Flights`)
