@@ -34,7 +34,10 @@ let evaluate (update : Domain.Message -> State -> State) (state : State) (msg : 
     match msg with
     | DomainMessage msg ->
         let newState = update msg state
-        let message = sprintf "The message was %A. New state is %A" msg newState
+        let message = 
+            match newState.State with
+            | Domain.FSBSStates.LoggedIn p -> sprintf "Logged in as %s, %s." p.Person.LastName p.Person.FirstName
+            | Domain.FSBSStates.NotLoggedIn -> "Not logged in."
         (newState, message)
     | HelpRequested ->
         let message = createHelpText ()

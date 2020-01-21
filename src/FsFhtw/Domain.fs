@@ -57,7 +57,7 @@ type Booking =
 
 type FSBSStates =
     | NotLoggedIn
-    | LoggedIn of Passenger option
+    | LoggedIn of Passenger
 
 type State = { Bookings: Booking list
                State: FSBSStates }
@@ -140,7 +140,7 @@ let update (msg : Message) (model : State) : State =
         let updatedBookings = List.append model.Bookings [booking]
         { model with Bookings = updatedBookings }
     | Login passenger ->
-        { model with State = LoggedIn (Some passenger) }
+        { model with State = LoggedIn passenger }
     | Logout ->
         { model with State = NotLoggedIn }
         
