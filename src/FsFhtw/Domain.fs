@@ -114,8 +114,11 @@ let init () : State = { Bookings = List.empty
 let update (msg : Message) (model : State) : State =
     match msg with
     | ListBookings ->
-        printfn "Bookings:"
-        model.Bookings |> List.iter (fun f -> printfn "%A" f)
+        match model.Bookings with 
+        | [] -> printfn "No Bookings."
+        | _ -> 
+            printfn "Bookings:"
+            model.Bookings |> List.iter (fun f -> printfn "%A" f)
         model
     | ListFlights ->
         Flights |> List.iter (fun a -> printfn "%O" a)
@@ -125,12 +128,11 @@ let update (msg : Message) (model : State) : State =
         searchFlights departure arrival |> List.iter (fun a -> printfn "%A" a)
         model
     | CreateBooking (flightDesignator, luggage) ->
-        printfn "Creating booking for flight %A" flightDesignator
         let designator = parseDesignator flightDesignator
         let flight = getFlight designator
         let passenger =
             match model.State with
-            | (LoggedIn p) -> p
+            | LoggedIn p -> p
             | _ -> failwith "Should not happen :>"
         let booking = { Booking.Flight = flight
                         Booking.Luggage = luggage
@@ -138,7 +140,7 @@ let update (msg : Message) (model : State) : State =
                         Booking.PaymentInfo = { Payment.Method = Cash;
                                                 Payment.Price = { Price.Amount = 200m; Price.Currency = "EUR"}}
                         Booking.BoardingInfo = None }
-        printfn "Booking created %A" booking
+        printfn "Booking created:%s%A" Environment.NewLine booking
         let updatedBookings = List.append model.Bookings [booking]
         { model with Bookings = updatedBookings }
     | Login passenger ->

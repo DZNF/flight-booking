@@ -26,11 +26,12 @@ let createHelpText () : string =
     let h = Map.empty
             |> Map.add "List Flights" "Prints a list of all the available flights."
             |> Map.add "List Bookings" "Prints a list of all the bookings."
-            |> Map.add "Create Booking" """Creates a new booking."""
+            |> Map.add "Create Booking" """Creates a new booking (e.g. "create booking OE/123 true")."""
             |> Map.add "Search Flights" """Searches for a flight using the given departure and arrival IATA codes (e.g. "search flight VIE DAL")."""
             |> Map.add "Login" """Logs in given user (e.g. "login freddy kruger 24.12.1957 598234")."""
             |> Map.add "Logout" "Logs out the user."
-    Map.fold (fun s k v -> sprintf "%s%s\t%s%s" s k v Environment.NewLine) "" h
+    let helptext = Map.fold (fun s k v -> sprintf "%s  %-17s%s%s" s k v Environment.NewLine) "" h
+    sprintf "%s%s" Environment.NewLine helptext
 
 let isMessageValidForState (state : State) (msg : Domain.Message) : bool =
     match (state.State, msg) with
@@ -60,7 +61,7 @@ let evaluate (update : Domain.Message -> State -> State) (state : State) (msg : 
         (state, message)
 
 let print (state : State, outputToPrint : string) =
-    printfn "%s\n" outputToPrint
+    printfn "%s[%s]" Environment.NewLine outputToPrint
     printf "> "
     state
 
