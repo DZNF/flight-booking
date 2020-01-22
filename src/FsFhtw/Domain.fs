@@ -26,6 +26,9 @@ type Flight =
       Duration: TimeSpan
       DepartureAirport: Airport
       ArrivalAirport: Airport }
+    override this.ToString() =
+        sprintf "* Flight %2s/%-7i %s%s" this.Designator.AirlineDesignator this.Designator.Number (this.DepartureTime.ToString("dd.MM.yy  hh:mm")) Environment.NewLine +
+        sprintf "  %-5s -> %-8s Duration: %s" this.DepartureAirport.IATA this.ArrivalAirport.IATA (this.Duration.ToString("hh\:mm"))
 
 type PaymentState =
     | Error of string
@@ -115,7 +118,7 @@ let update (msg : Message) (model : State) : State =
         model.Bookings |> List.iter (fun f -> printfn "%A" f)
         model
     | ListFlights ->
-        Flights |> List.iter (fun a -> printfn "%A" a)
+        Flights |> List.iter (fun a -> printfn "%O" a)
         model
     | SearchFlights (departure, arrival) ->
         printfn "Results for %A -> %A:" departure.IATA arrival.IATA
