@@ -85,11 +85,6 @@ let Flights = [
           { FlightDesignator.AirlineDesignator = "OE"
             FlightDesignator.Number = 334 }} ]
 
-let LoggedInPassenger = { Passenger.Person = { FirstName = "Elfriede"
-                                               LastName = "Wiedenbauer"
-                                               Birthday = "11.11.1911" }
-                          Passenger.FrequentFlyerProgramId = Some "1337" }
-
 type Message =
     | ListBookings
     | ListFlights
@@ -130,9 +125,13 @@ let update (msg : Message) (model : State) : State =
         printfn "Creating booking for flight %A" flightDesignator
         let designator = parseDesignator flightDesignator
         let flight = getFlight designator
+        let passenger =
+            match model.State with
+            | (LoggedIn p) -> p
+            | _ -> failwith "Should not happen :>"
         let booking = { Booking.Flight = flight
                         Booking.Luggage = luggage
-                        Booking.Passenger = LoggedInPassenger
+                        Booking.Passenger = passenger
                         Booking.PaymentInfo = { Payment.Method = Cash;
                                                 Payment.Price = { Price.Amount = 200m; Price.Currency = "EUR"}}
                         Booking.BoardingInfo = None }

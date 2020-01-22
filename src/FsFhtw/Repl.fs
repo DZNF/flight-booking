@@ -32,15 +32,25 @@ let createHelpText () : string =
             |> Map.add "Logout" "Logs out the user."
     Map.fold (fun s k v -> sprintf "%s%s\t%s%s" s k v Environment.NewLine) "" h
 
+let isMessageValidForState (state : State) (msg : Domain.Message) : bool =
+    match (state.State, msg) with
+    | (Domain.FSBSStates.NotLoggedIn, Domain.Message.Login _)
+    | (Domain.FSBSStates.NotLoggedIn, Domain.Message.ListFlights _) -> true
+    | (Domain.FSBSStates.NotLoggedIn, _) -> false
+    | (Domain.FSBSStates.LoggedIn _, Domain.Message.Login _) -> false
+    | (Domain.FSBSStates.LoggedIn _, _) -> true
+
 let evaluate (update : Domain.Message -> State -> State) (state : State) (msg : Message) =
     match msg with
-    | DomainMessage msg ->
+    | DomainMessage msg when isMessageValidForState state msg ->    
         let newState = update msg state
         let message = 
             match newState.State with
             | Domain.FSBSStates.LoggedIn p -> sprintf "Logged in as %s, %s." p.Person.LastName p.Person.FirstName
             | Domain.FSBSStates.NotLoggedIn -> "Not logged in."
         (newState, message)
+    | DomainMessage _ ->
+        (state, "Message is not valid for current state.")
     | HelpRequested ->
         let message = createHelpText ()
         (state, message)
